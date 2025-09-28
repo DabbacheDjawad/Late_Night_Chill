@@ -78,6 +78,12 @@ export default interface Anime {
   };
 }
 
+export interface AnimeResponse {
+  animes: Anime[];
+  hasMore: boolean;
+}
+
+
 export interface AnimeEpisode {
   mal_id: number;
   url: string;
@@ -146,3 +152,22 @@ export type orderBy =
   | "members"
   | "favorites";
   export type Sort = "asc"|"desc"|undefined;
+
+
+export interface Episode {
+    mal_id: number;
+    title: string;
+    url: string;
+    images: {
+      jpg: { image_url: string };
+      webp?: { image_url: string };
+    };
+  latestEpisode: {
+    mal_id: number;
+    url: string;
+    title: string;
+    aired: string;
+    score: number | null;
+  };
+}
+

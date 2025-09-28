@@ -1,7 +1,7 @@
 import Image from "next/image";
 import fallbackImage from "@/public/fallback.png";
 import { Star } from "lucide-react";
-import Anime from "@/types/Anime";
+import Anime, { AnimeResponse } from "@/types/Anime";
 import Link from "next/link";
 
 interface AnimeCardProps {

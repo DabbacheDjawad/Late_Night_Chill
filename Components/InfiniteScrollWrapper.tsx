@@ -1,14 +1,16 @@
-'use client';
+"use client";
 import { useEffect, useRef, useState } from "react";
 import Anime from "@/types/Anime";
+import { Episode } from "@/types/Anime"; //
 import AnimeCard from "./AnimeCard";
+import EpisodeCard from ".//EpisodesCard";
 import LoadingSpinner from "@/app/loading";
 import { fetchMoreAnimes } from "../lib/AnimeApi";
 import { Rating, type, orderBy, Sort } from "@/types/Anime";
 
 interface InfiniteScrollWrapperProps {
-  children: React.ReactNode;
-  initialAnimes: Anime[];
+  children?: React.ReactNode;
+  initialAnimes: Anime[] | Episode[];
   hasMore: boolean;
   searchName?: string;
   filters?: {
@@ -20,6 +22,8 @@ interface InfiniteScrollWrapperProps {
     startDate: string;
     endDate: string;
   };
+  latest?: boolean;
+  latestEpisodes?: boolean;
 }
 
 export default function InfiniteScrollWrapper({
@@ -27,9 +31,11 @@ export default function InfiniteScrollWrapper({
   initialAnimes,
   hasMore: initialHasMore,
   searchName,
-  filters
+  filters,
+  latest,
+  latestEpisodes,
 }: InfiniteScrollWrapperProps) {
-  const [animes, setAnimes] = useState<Anime[]>(initialAnimes);
+  const [items, setItems] = useState<(Anime | Episode)[]>(initialAnimes);
   const [page, setPage] = useState(2);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialHasMore);
@@ -37,7 +43,7 @@ export default function InfiniteScrollWrapper({
 
   // Reset when search or filters change
   useEffect(() => {
-    setAnimes(initialAnimes);
+    setItems(initialAnimes);
     setPage(2);
     setHasMore(initialHasMore);
   }, [initialAnimes, initialHasMore, searchName, JSON.stringify(filters)]);
@@ -45,42 +51,56 @@ export default function InfiniteScrollWrapper({
   const fetchMore = async () => {
     if (loading || !hasMore) return;
 
-    console.log(`Fetching page ${page} with filters:`, filters);
     setLoading(true);
-
     try {
-      let result;
-        // For regular anime with filters - FIXED: Added sort parameter
-        result = await fetchMoreAnimes(
-          page,
-          searchName,
-          filters?.startDate,
-          filters?.endDate,
-          filters?.genre,
-          filters?.rating,
-          filters?.type,
-          filters?.orderBy,
-          filters?.sort // ✅ FIXED: Added missing sort parameter
+      const result = await fetchMoreAnimes(
+        page,
+        searchName,
+        filters?.startDate,
+        filters?.endDate,
+        filters?.genre,
+        filters?.rating,
+        filters?.type,
+        filters?.orderBy,
+        filters?.sort,
+        latest,
+        latestEpisodes
+      );
+
+      setItems((prev) => {
+        const existingIds = new Set(
+          prev.map((item) =>
+            latestEpisodes
+              ? (item as Episode).mal_id +
+                "-" +
+                (item as Episode).latestEpisode?.mal_id
+              : (item as Anime).mal_id
+          )
+        );
+        const newItems = result.animes.filter((item: Anime | Episode) =>
+          latestEpisodes
+            ? !existingIds.has(
+                (item as Episode).mal_id +
+                  "-" +
+                  (item as Episode).latestEpisode?.mal_id
+              )
+            : !existingIds.has((item as Anime).mal_id)
         );
 
-      setAnimes(prev => {
-        // Prevent duplicates by filtering out anime that already exist
-        const existingIds = new Set(prev.map(anime => anime.mal_id));
-        const newAnimes = result.animes.filter(anime => !existingIds.has(anime.mal_id));
-        return [...prev, ...newAnimes];
+        return [...prev, ...newItems];
       });
-      
+
       setHasMore(result.hasMore);
-      setPage(prev => prev + 1);
+      setPage((prev) => prev + 1);
     } catch (error) {
-      console.error("Error fetching more anime:", error);
-      setHasMore(false); // Stop trying to fetch more on error
+      console.error("Error fetching more data:", error);
+      setHasMore(false);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fixed Intersection Observer
+  // Intersection Observer
   useEffect(() => {
     if (loading || !hasMore) return;
 
@@ -90,44 +110,44 @@ export default function InfiniteScrollWrapper({
           fetchMore();
         }
       },
-      {
-        threshold: 0.1,
-        rootMargin: "100px 0px", // Start loading when 100px away from bottom
-      }
+      { threshold: 0.1, rootMargin: "100px 0px" }
     );
 
     const currentRef = observerRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
+    if (currentRef) observer.observe(currentRef);
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
+      if (currentRef) observer.unobserve(currentRef);
     };
-  }, [loading, hasMore, page, searchName, JSON.stringify(filters)]); // ✅ FIXED: Added proper dependencies
+  }, [loading, hasMore, page, searchName, JSON.stringify(filters)]);
 
   return (
     <>
       <div className="flex flex-wrap justify-center gap-10 mt-16">
-        {animes.map((anime: Anime, index: number) => (
-          <AnimeCard key={`${anime.mal_id}-${index}`} anime={anime} />
-        ))}
+        {items.map((item, index) =>
+          latestEpisodes ? (
+            <EpisodeCard key={`ep-${index}`} episode={item as Episode} />
+          ) : (
+            <AnimeCard
+              key={`anime-${(item as Anime).mal_id}-${index}`}
+              anime={item as Anime}
+            />
+          )
+        )}
       </div>
-      
-      <div 
-        ref={observerRef} 
+
+      <div
+        ref={observerRef}
         className="h-10 mt-20 mb-10 flex justify-center items-center"
       >
         {loading && <LoadingSpinner />}
-        {!hasMore && animes.length > 0 && (
+        {!hasMore && items.length > 0 && (
           <p className="text-gray-400">
-            {searchName ? 'No more search results.' : 'No more anime to load.'}
+            {searchName ? "No more search results." : "No more items to load."}
           </p>
         )}
-        {!hasMore && animes.length === 0 && (
-          <p className="text-gray-400">No anime found.</p>
+        {!hasMore && items.length === 0 && (
+          <p className="text-gray-400">No results found.</p>
         )}
       </div>
     </>
