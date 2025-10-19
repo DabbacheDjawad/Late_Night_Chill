@@ -1,7 +1,9 @@
-import Anime, { EpisodesResponse } from "@/types/Anime";
+import { EpisodesResponse, SeasonResponse, TopCharacter , Anime} from "@/types/Anime";
 import { AnimeCharacter } from "@/types/Anime";
 const JIKAN_BASE_URL = "https://api.jikan.moe/v4/anime";
 import { AnimeResponse } from "@/types/Anime";
+import { CharactersResponse } from "@/types/Anime";
+import { Pagination } from "@/types/Anime";
 
 export async function fetchInitialAnimes(
   searchName?: string,
@@ -135,7 +137,9 @@ export async function fetchAnimeDetails(
   animeId: string
 ): Promise<Anime | null> {
   try {
-    const response = await fetch(`${JIKAN_BASE_URL}/${animeId}`);
+    const response = await fetch(`${JIKAN_BASE_URL}/${animeId}` , {next : {revalidate : 60}});
+    console.log(response);
+    
     if (!response.ok) throw new Error(`Error Status ${response.status}`);
 
     const { data } = await response.json();
@@ -248,5 +252,45 @@ export async function fetchLatestEpisodes(page: number = 1) {
   } catch (err) {
     console.error("Error fetching latest episodes:", err);
     return { animes: [], hasMore: false };
+  }
+}
+
+
+//top characters
+export async function fetchTopCharacters(page : number = 1 ): Promise<CharactersResponse>{
+  try{
+    const url = `https://api.jikan.moe/v4/top/characters?page=${page}&limit=24`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
+    const characters = await res.json();
+
+    return {
+      characters :characters.data,
+      pagination : characters.pagination as Pagination
+    }
+  }catch(error){
+    console.log(error);
+    return {
+      characters : [],
+      pagination : {has_next_page : false}
+    }
+  }
+}
+
+
+//current seasons
+export async function fetchCurrentSeason(page: number = 1): Promise<SeasonResponse> {
+  try {
+    const url = `https://api.jikan.moe/v4/seasons/now?page=${page}`;
+    const res = await fetch(url, { next: { revalidate: 60 } });
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const { data, pagination } = await res.json();
+    return {
+      animes: data as Anime[],
+      pagination: { has_next_page: pagination.has_next_page },
+    };
+  } catch (error) {
+    console.error("Error fetching current season:", error);
+    return { animes: [], pagination: { has_next_page: false } };
   }
 }

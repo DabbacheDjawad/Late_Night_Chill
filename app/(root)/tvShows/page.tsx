@@ -30,7 +30,7 @@ const page = async ({ searchParams }: ShowsPageProps) => {
         <div>
           <ShowsSearchForm name={query} type="tv" />
           <Suspense fallback={<AnimeGridSkeleton />}>
-              <ShowsGrid type="tv" searchQuery={query as string}/>
+              <ShowsGrid mode="discover" type="tv" searchQuery={query as string}/>
           </Suspense>
         </div>
       </div>

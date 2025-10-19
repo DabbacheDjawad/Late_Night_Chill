@@ -1,6 +1,5 @@
 import AnimeCard from "@/Components/AnimeCard";
 import Button from "@/Components/Button";
-import ShowsCard from "@/Components/ShowsCard";
 import discover from "@/public/discover.webp";
 import Image from "next/image";
 import Link from "next/link";

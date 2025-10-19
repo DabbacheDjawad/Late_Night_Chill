@@ -1,5 +1,5 @@
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
-export default interface Anime {
+export interface Anime {
   mal_id: number;
 
   titles: {
@@ -98,7 +98,7 @@ export interface AnimeEpisode {
 }
 
 export interface Pagination {
-  last_visible_page: number;
+  last_visible_page?: number;
   has_next_page: boolean;
 }
 
@@ -137,6 +137,21 @@ export interface AnimeCharacter {
 }
 
 
+export interface TopCharacter {
+  mal_id: number;
+  url: string;
+  images: {
+    jpg?: { image_url: string };
+    webp?: { image_url: string };
+  };
+  name: string;
+  nicknames?: string[];
+  favorites: number;
+  about?: string;
+  rank?:number
+}
+
+
 export type Rating = "g" | "pg" | "pg13" | "r17" | "r" | "rx" | undefined;
 export type type = "tv" | "movie" | "ova" | "special" | "ona" | "music" | undefined;
 export type orderBy =
@@ -171,3 +186,12 @@ export interface Episode {
   };
 }
 
+export interface CharactersResponse {
+  characters: TopCharacter[];
+  pagination:Pagination
+}
+
+export interface SeasonResponse {
+  animes: Anime[];
+  pagination:Pagination
+}

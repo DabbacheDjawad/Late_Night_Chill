@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   Frame,
   Map,
@@ -12,57 +12,77 @@ import {
   Heart,
   BookMarked,
   Monitor,
-} from "lucide-react"
+  icons,
+} from "lucide-react";
 
-import { NavMain } from "@/Components/nav-main"
-import { NavLists } from "@/Components/nav-lists"
-import { NavUser } from "@/Components/nav-user"
+import { NavMain } from "@/Components/nav-main";
+import { NavLists } from "@/Components/nav-lists";
+import { NavUser } from "@/Components/nav-user";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/Components/ui/sidebar"
-import User from "@/types/User"
-import AppSidebarProps from "@/types/AppSideBarProps"
-import { useUser } from "@/Context/UserContext"
-
+} from "@/Components/ui/sidebar";
+import User from "@/types/User";
+import AppSidebarProps from "@/types/AppSideBarProps";
+import { useUser } from "@/Context/UserContext";
+import { IoMdPeople } from "react-icons/io";
+import { CiStar } from "react-icons/ci";
 
 const navMain = [
   {
     title: "Anime",
-    url: "/anime",
-    icon: ChartBarStacked,
+    href: "/anime",
     isActive: true,
     items: [
-      { title: "Top Rated", url: "/anime/top" },
-      { title: "Popular", url: "/anime/popular" },
-      { title: "Latest Animes", url: "/anime/latest" },
-      { title: "Latest Episodes", url: "/anime/latest_episodes" },
+      {
+        title: "Top Rated",
+        items: [
+          { title: "Shows", href: "/anime/top/shows" },
+          { title: "Characters", href: "/anime/top/characters" },
+        ],
+      },
+      {
+        title: "Popular",
+        items: [
+          { title: "Shows", href: "/anime/popular" },
+        ],
+      },
+      {
+        title: "Latest Animes",
+        href: "/anime/latest",
+      },
+      {
+        title: "Latest Episodes",
+        href: "/anime/latest_episodes",
+      },
+            {
+        title: "Current seasons",
+        href: "/anime/seasons/current",
+      },
     ],
   },
   {
     title: "Movies",
-    url: "movies",
-    icon: Star,
+    href: "movies",
     items: [
-      { title: "Top Rated", url: "/movies/top" },
-      { title: "Popular", url: "/movies/popular" },
-      { title: "Latest Movies", url: "/movies/latest" },
+      { title: "Top Rated", href: "/movies/top" },
+      { title: "Popular", href: "/movies/popular" },
+      { title: "Latest Movies", href: "/movies/latest" },
     ],
   },
   {
     title: "TvShows",
-    url: "#",
-    icon: Settings2,
+    href: "tvShows",
     items: [
-      { title: "Top Rated", url: "/tvShows/top" },
-      { title: "Popular", url: "/tvShows/popular" },
-      { title: "Latest Shows", url: "/tvShows/latest" },
+      { title: "Top Rated", href: "/tvShows/top" },
+      { title: "Popular", href: "/tvShows/popular" },
+      { title: "Latest Shows", href: "/tvShows/latest" },
     ],
   },
-]
+];
 
 const lists = [
   {
@@ -90,7 +110,7 @@ const lists = [
       },
     ],
   },
-]
+];
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
   const userInfo = useUser().user;
@@ -102,9 +122,9 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         <NavLists lists={lists} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user}/>
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

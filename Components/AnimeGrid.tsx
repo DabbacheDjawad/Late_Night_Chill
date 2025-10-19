@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import AnimeCard from "./AnimeCard";
 import InfiniteScrollWrapper from "./InfiniteScrollWrapper";
 import { fetchInitialAnimes } from "../lib/AnimeApi";
-import Anime from "@/types/Anime";
+import {Anime} from "@/types/Anime";
 import {
   Sheet,
   SheetContent,

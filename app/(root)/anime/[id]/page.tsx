@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { Star } from "lucide-react"
 import fallbackImage from "@/public/fallback.png"
-import Anime from "@/types/Anime"
+import {Anime} from "@/types/Anime"
 import React from "react"
 import { fetchAnimeDetails } from "@/lib/AnimeApi"
 import Link from "next/link"

@@ -14,3 +14,20 @@ export default interface TvShow {
   origin_country: string[];
   adult : boolean;
 }
+
+
+export interface TVShowDetails {
+  id: number;
+  name: string;
+  overview: string;
+  first_air_date: string;
+  last_air_date: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  vote_average: number;
+  genres: { id: number; name: string }[];
+  number_of_seasons: number;
+  number_of_episodes: number;
+  tagline: string;
+  status: string;
+}

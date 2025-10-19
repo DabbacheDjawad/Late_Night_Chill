@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Anime from "@/types/Anime";
+import {Anime} from "@/types/Anime";
 import { Episode } from "@/types/Anime"; //
 import AnimeCard from "./AnimeCard";
 import EpisodeCard from ".//EpisodesCard";
