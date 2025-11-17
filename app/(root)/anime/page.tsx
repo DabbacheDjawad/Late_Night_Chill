@@ -10,7 +10,7 @@ interface AnimePageProps {
 }
 
 const Page = async ({ searchParams }: AnimePageProps) => {
-  const query =( await searchParams)?.name || "";
+  const query =searchParams?.name || "";
 
   const initialData = await fetchInitialAnimes(query);
 
