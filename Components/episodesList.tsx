@@ -20,7 +20,7 @@ export default function EpisodesList({ animeId }: { animeId: string }) {
         );
         if (!res) throw new Error("Failed getting episodes, please try again");
         setEpisodes(res.data);
-        setTotalPages(res.pagination.last_visible_page);
+        setTotalPages(res.pagination.last_visible_page as number);
       } catch (err) {
         console.error(err);
       } finally {
