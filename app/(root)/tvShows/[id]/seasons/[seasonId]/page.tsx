@@ -3,13 +3,13 @@ import { fetchTvSeasonEpisodes } from "@/lib/ShowApi";
 import Image from "next/image";
 
 interface SeasonEpisodesPageProps {
-  params: { id: string; seasonId: string };
+  params: Promise<{ id: string; seasonId: string }>;
 }
 
 export default async function SeasonEpisodesPage({
   params,
 }: SeasonEpisodesPageProps) {
-  const { id, seasonId } = params;
+  const { id, seasonId } = await params;
   
   const seasonData = await fetchTvSeasonEpisodes(id, seasonId);
 
