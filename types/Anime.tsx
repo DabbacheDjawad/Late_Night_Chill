@@ -78,6 +78,8 @@ export interface Anime {
   };
 }
 
+
+
 export interface AnimeResponse {
   animes: Anime[];
   hasMore: boolean;

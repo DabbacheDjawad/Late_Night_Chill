@@ -3,6 +3,7 @@ import fallbackImage from "@/public/fallback.png";
 import { Star } from "lucide-react";
 import { AnimeResponse,Anime } from "@/types/Anime";
 import Link from "next/link";
+import AddToFavouritesButton from "./AddToFavouritesButton";
 
 interface AnimeCardProps {
   anime: Anime;

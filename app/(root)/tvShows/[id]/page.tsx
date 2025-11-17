@@ -2,6 +2,8 @@ import Image from "next/image";
 import { getShowDetails } from "@/lib/ShowApi";
 import { TVShowDetails } from "@/types/Show";
 import Link from "next/link";
+import AddToFavouritesButton from "@/Components/AddToFavouritesButton";
+import WishlistButton from "@/Components/wishListButton";
 
 interface TvShowPageProps {
   params: { id: string };
@@ -61,17 +63,22 @@ export default async function page({ params }: TvShowPageProps) {
           )}
 
           {/* Genres */}
-          <div className="flex flex-wrap gap-3 mb-6">
-            {show.genres.map((g) => (
-              <span
-                key={g.id}
-                className="bg-gradient-to-r from-blue-500 to-indigo-500 px-3 py-1 rounded-full text-sm font-medium shadow-md"
-              >
-                {g.name}
-              </span>
-            ))}
+          <div className="flex justify-between">
+            <div className="flex flex-wrap gap-3 mb-6">
+              {show.genres.map((g) => (
+                <span
+                  key={g.id}
+                  className="bg-gradient-to-r from-blue-500 to-indigo-500 px-3 py-1 rounded-full text-sm font-medium shadow-md"
+                >
+                  {g.name}
+                </span>
+              ))}
+            </div>
+            <div className="flex items-baseline gap-4">
+              <AddToFavouritesButton mediaId={show.id} mediaType={"tv"} />
+              <WishlistButton mediaId={show.id} mediaType={"tv"} />
+            </div>
           </div>
-
           {/* Overview */}
           <p className="text-gray-200 leading-relaxed">{show.overview}</p>
 

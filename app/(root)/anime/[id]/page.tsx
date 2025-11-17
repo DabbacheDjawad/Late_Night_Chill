@@ -1,3 +1,4 @@
+
 import Image from "next/image"
 import { Star } from "lucide-react"
 import fallbackImage from "@/public/fallback.png"
@@ -5,6 +6,9 @@ import {Anime} from "@/types/Anime"
 import React from "react"
 import { fetchAnimeDetails } from "@/lib/AnimeApi"
 import Link from "next/link"
+import AddToFavouritesButton from "@/Components/AddToFavouritesButton"
+import WishlistButton from "@/Components/wishListButton"
+import StartWatchingButton from "@/Components/StartWatchingButton"
 
 const AnimeDetailsPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
@@ -46,6 +50,8 @@ const AnimeDetailsPage = async ({ params }: { params: Promise<{ id: string }> })
           <div className="flex gap-5 mt-5 max-sm:text-sm ">
             <Link href={`/anime/${id}/episodes`} className="border border-black dark:border-white rounded-lg py-1 px-4">Episodes</Link>            
             <Link href={`/anime/${id}/characters`} className="border border-black dark:border-white rounded-lg py-1 px-4">Characters</Link>
+               <AddToFavouritesButton mediaId={anime.mal_id} mediaType="anime" />
+               <WishlistButton mediaId={anime.mal_id} mediaType={"anime"} />
           </div>
         </div>
       </div>
@@ -61,7 +67,7 @@ const AnimeDetailsPage = async ({ params }: { params: Promise<{ id: string }> })
             height={400}
             className="rounded-lg shadow-lg"
           />
-
+        <StartWatchingButton mediaId={anime.mal_id} title={anime.titles[0].title} image={anime.images.webp?.image_url as string} />
           {/* Extra Info */}
           <div className="text-sm text-muted-foreground space-y-2 w-full 2xl:ml-20">
             <p><strong>Episodes:</strong> {anime.episodes || "N/A"}</p>

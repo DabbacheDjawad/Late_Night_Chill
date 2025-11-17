@@ -98,13 +98,13 @@ const lists = [
       },
       {
         title: "Watch Later",
-        url: "/later",
+        url: "/wishList",
         secondIcon: BookMarked,
         secondaryIconColor: "var(--main-red)",
       },
       {
         title: "Currently Watching",
-        url: "/currently-watching",
+        url: "/progres",
         secondIcon: Monitor,
         secondaryIconColor: "var(--main-red)",
       },

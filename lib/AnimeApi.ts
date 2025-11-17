@@ -138,8 +138,6 @@ export async function fetchAnimeDetails(
 ): Promise<Anime | null> {
   try {
     const response = await fetch(`${JIKAN_BASE_URL}/${animeId}` , {next : {revalidate : 60}});
-    console.log(response);
-    
     if (!response.ok) throw new Error(`Error Status ${response.status}`);
 
     const { data } = await response.json();

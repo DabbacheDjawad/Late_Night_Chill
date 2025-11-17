@@ -1,4 +1,3 @@
-// app/tv/[id]/seasons/page.tsx
 import { fetchTvShowSeasons } from "@/lib/ShowApi";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,7 +46,6 @@ export default async function TVSeasonsPage({ params }: SeasonPageProps) {
                 className="object-cover group-hover:opacity-90 transition-opacity"
               />
             </div>
-
             {/* Info */}
             <div className="p-3">
               <h2 className="font-bold text-lg truncate group-hover:text-blue-400 transition-colors">

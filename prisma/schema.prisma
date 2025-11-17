@@ -1,0 +1,422 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model User {
+  id               String    @id @default(cuid())
+  name             String?
+  email            String?   @unique
+  emailVerified    DateTime?
+  image            String?
+  accounts         Account[]
+  sessions         Session[]
+
+  //favourites
+  favouriteMovies  Movie[]   @relation("UserMovieFavourites")
+  favouriteTvShows TvShow[]  @relation("UserTvFavourites")
+  favouriteAnimes  Anime[]   @relation("UserAnimeFavourites")
+
+  //watch Later
+  wishlistAnimes    Anime[] @relation("WishlistAnimes")
+  wishlistMovies    Movie[] @relation("WishlistMovies")
+  wishlistTvShows   TvShow[] @relation("WishlistTvShows")
+
+  //keep watching
+   watchProgress WatchProgress[] 
+}
+
+//anime related tables
+//Anime
+model Anime {
+  id          String    @id @default(cuid())
+  malId       Int       @unique
+  synopsis    String?
+  background  String?
+  score       Float?
+  rank        Int?
+  popularity  Int?
+  members     Int?
+  favorites   Int?
+  episodes    Int?
+  status      String?
+  rating      String?
+  season      String?
+  year        Int?
+  type        String?
+  duration    String?
+  source      String?
+  airedFrom   DateTime?
+  airedTo     DateTime?
+  airedString String?
+
+  // Relations
+  titles    AnimeTitle[]
+  images    AnimeImage?
+  trailer   Trailer? 
+  genres    AnimeGenre[]
+  themes    AnimeTheme[]
+  studios   AnimeStudio[]
+  producers AnimeProducer[]
+  licensors AnimeLicensor[]
+
+  //one to many
+  episodesList AnimeEpisode[]
+  characters   AnimeCharacter[]
+  favouritedBy User[]           @relation("UserAnimeFavourites")
+   wishlistedBy User[]          @relation("WishlistAnimes")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AnimeTitle {
+  id      Int    @id @default(autoincrement())
+  type    String
+  title   String
+  anime   Anime  @relation(fields: [animeId], references: [id] , onDelete: Cascade)
+  animeId String
+}
+
+model AnimeImage {
+  id      Int     @id @default(autoincrement())
+  jpgUrl  String
+  webpUrl String?
+  anime   Anime   @relation(fields: [animeId], references: [id] , onDelete: Cascade)
+  animeId String  @unique
+}
+
+model Trailer {
+  id              Int     @id @default(autoincrement())
+  url             String?
+  youtubeId       String?
+  embedUrl        String
+  imageUrl        String?
+  smallImageUrl   String?
+  mediumImageUrl  String?
+  maximumImageUrl String?
+  anime           Anime   @relation(fields: [animeId], references: [id] , onDelete: Cascade)
+  animeId         String  @unique
+}
+
+// =======================
+// Many-to-many categories
+// =======================
+
+model Genre {
+  id           String              @id @default(cuid())
+  malId        Int                 @unique
+  name         String
+  animes       AnimeGenre[]
+  movies       MovieGenre[]
+  movieDetails MovieDetailsGenre[]
+  tvShows      TvShowGenre[]
+}
+
+model AnimeGenre {
+  anime   Anime  @relation(fields: [animeId], references: [id] , onDelete: Cascade)
+  animeId String
+  genre   Genre  @relation(fields: [genreId], references: [id])
+  genreId String
+
+  @@id([animeId, genreId])
+}
+
+model Theme {
+  id     Int          @id @default(autoincrement())
+  malId  Int          @unique
+  name   String
+  animes AnimeTheme[]
+}
+
+model AnimeTheme {
+  anime   Anime  @relation(fields: [animeId], references: [id] , onDelete: Cascade)
+  animeId String
+  theme   Theme  @relation(fields: [themeId], references: [id])
+  themeId Int
+
+  @@id([animeId, themeId])
+}
+
+model Studio {
+  id     Int           @id @default(autoincrement())
+  malId  Int           @unique
+  name   String
+  animes AnimeStudio[]
+}
+
+model AnimeStudio {
+  anime    Anime  @relation(fields: [animeId], references: [id] , onDelete: Cascade)
+  animeId  String
+  studio   Studio @relation(fields: [studioId], references: [id])
+  studioId Int
+
+  @@id([animeId, studioId])
+}
+
+model Producer {
+  id     Int             @id @default(autoincrement())
+  malId  Int             @unique
+  name   String
+  animes AnimeProducer[]
+}
+
+model AnimeProducer {
+  anime      Anime    @relation(fields: [animeId], references: [id] , onDelete: Cascade)
+  animeId    String
+  producer   Producer @relation(fields: [producerId], references: [id])
+  producerId Int
+
+  @@id([animeId, producerId])
+}
+
+model Licensor {
+  id     Int             @id @default(autoincrement())
+  malId  Int             @unique
+  name   String
+  animes AnimeLicensor[]
+}
+
+model AnimeLicensor {
+  anime      Anime    @relation(fields: [animeId], references: [id] , onDelete: Cascade)
+  animeId    String
+  licensor   Licensor @relation(fields: [licensorId], references: [id])
+  licensorId Int
+
+  @@id([animeId, licensorId])
+}
+
+model AnimeEpisode {
+  id             Int     @id @default(autoincrement())
+  mal_id         Int     @unique
+  url            String
+  title          String
+  title_japanese String
+  title_romanji  String
+  aired          String
+  score          Float?
+  filler         Boolean
+  recap          Boolean
+  forum_url      String
+
+  // Relation
+  animeId String
+  anime   Anime  @relation(fields: [animeId], references: [id] , onDelete: Cascade)
+}
+
+model AnimeCharacter {
+  id          Int    @id @default(autoincrement())
+  characterId Int    @unique // mal_id from Jikan
+  name        String
+  url         String
+  images      Json
+  role        String
+
+  animeId String
+  anime   Anime  @relation(fields: [animeId], references: [id] , onDelete: Cascade)
+
+  voiceActors VoiceActor[]
+}
+
+model VoiceActor {
+  id       Int     @id @default(autoincrement())
+  personId Int?
+  name     String?
+  url      String?
+  images   Json?
+  language String
+
+  characterId Int
+  character   AnimeCharacter @relation(fields: [characterId], references: [id])
+}
+
+model TopCharacter {
+  id        Int      @id @default(autoincrement())
+  mal_id    Int      @unique
+  url       String
+  name      String
+  nicknames String[] @default([])
+  favorites Int
+  about     String?
+  rank      Int?
+  images    Json
+}
+
+//Movies
+model Movie {
+  id               String   @id @default(cuid())
+  tmdbId           Int      @unique
+  title            String
+  overview         String
+  posterPath       String?
+  backdropPath     String?
+  releaseDate      DateTime
+  voteAverage      Float
+  voteCount        Int
+  popularity       Float
+  originalLanguage String
+  originalTitle    String
+  adult            Boolean  @default(false)
+  video            Boolean  @default(false)
+
+  // Relations
+  genres       MovieGenre[]
+  details      MovieDetails? @relation("MovieToDetails") // 👈 back relation
+  favouritedBy User[]        @relation("UserMovieFavourites")
+  wishlistedBy   User[]      @relation("WishlistMovies")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MovieGenre {
+  movie   Movie  @relation(fields: [movieId], references: [id] , onDelete: Cascade)
+  movieId String
+  genre   Genre  @relation(fields: [genreId], references: [id])
+  genreId String
+
+  @@id([movieId, genreId])
+}
+
+model MovieDetails {
+  id           String   @id @default(cuid())
+  tmdbId       Int      @unique
+  title        String
+  overview     String
+  releaseDate  DateTime
+  posterPath   String?
+  backdropPath String?
+  voteAverage  Float
+  runtime      Int
+  tagline      String?
+  status       String
+
+  // Relations
+  genres  MovieDetailsGenre[]
+  movie   Movie?              @relation("MovieToDetails", fields: [movieId], references: [id] , onDelete: Cascade)
+  movieId String?             @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MovieDetailsGenre {
+  movieDetails   MovieDetails @relation(fields: [movieDetailsId], references: [id])
+  movieDetailsId String
+  genre          Genre        @relation(fields: [genreId], references: [id])
+  genreId        String
+
+  @@id([movieDetailsId, genreId])
+}
+
+//TV SHOWS
+model TvShow {
+  id               String   @id @default(cuid())
+  tmdbId           Int      @unique // TMDB show ID
+  name             String
+  overview         String
+  posterPath       String?
+  backdropPath     String?
+  firstAirDate     DateTime
+  voteAverage      Float
+  voteCount        Int?
+  popularity       Float?
+  originalLanguage String?
+  originalName     String?
+  adult            Boolean  @default(false)
+
+  // Many-to-many: Genres
+  genres TvShowGenre[]
+
+  // Origin countries (array since multiple)
+  originCountries String[] @default([])
+
+  // Users who favorited this show
+  favouritedBy User[] @relation("UserTvFavourites")
+  wishlistedBy    User[] @relation("WishlistTvShows")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TvShowGenre {
+  tvShow   TvShow @relation(fields: [tvShowId], references: [id] ,onDelete: Cascade)
+  tvShowId String
+  genre    Genre  @relation(fields: [genreId], references: [id])
+  genreId  String
+
+  @@id([tvShowId, genreId])
+}
+
+enum MediaType {
+  anime
+  movie
+  tv
+}
+
+
+model WatchProgress {
+  id         Int        @id @default(autoincrement())
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String
+  mediaType  MediaType
+  mediaId    String     
+  title      String?
+  image      String?    
+  currentTime Int       @default(0)
+  duration    Int?      
+  lastWatched DateTime  @default(now())
+  lastEpisode Int?
+  notes String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@unique([userId, mediaType, mediaId])
+  @@index([userId, lastWatched])  
+}

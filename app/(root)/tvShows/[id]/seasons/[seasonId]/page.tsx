@@ -1,3 +1,4 @@
+import AddToFavouritesButton from "@/Components/AddToFavouritesButton";
 import { fetchTvSeasonEpisodes } from "@/lib/ShowApi";
 import Image from "next/image";
 
@@ -47,7 +48,6 @@ export default async function SeasonEpisodesPage({
                 className="object-cover group-hover:opacity-90 transition-opacity"
               />
             </div>
-
             {/* Info */}
             <div className="p-4">
               <h2 className="font-bold text-lg truncate group-hover:text-blue-400 transition-colors">

@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { getShowDetails } from "@/lib/ShowApi";
 import { MovieDetails } from "@/types/Movie";
+import AddToFavouritesButton from "@/Components/AddToFavouritesButton";
+import WishlistButton from "@/Components/wishListButton";
 
 interface MoviePageProps {
   params: { id: string };
@@ -57,17 +59,22 @@ export default async function MovieDetailsPage({ params }: MoviePageProps) {
           )}
 
           {/* Genres */}
-          <div className="flex flex-wrap gap-3 mb-6">
-            {movie.genres.map((g) => (
-              <span
-                key={g.id}
-                className="bg-gradient-to-r from-red-500 to-pink-500 px-3 py-1 rounded-full text-sm font-medium shadow-md"
-              >
-                {g.name}
-              </span>
-            ))}
+          <div className="flex justify-between items-baseline">
+            <div className="flex flex-wrap gap-3 mb-6">
+              {movie.genres.map((g) => (
+                <span
+                  key={g.id}
+                  className="bg-gradient-to-r from-red-500 to-pink-500 px-3 py-1 rounded-full text-sm font-medium shadow-md"
+                >
+                  {g.name}
+                </span>
+              ))}
+            </div>
+            <div className="flex">
+                <AddToFavouritesButton mediaId={movie.id} mediaType="movie"/>
+                <WishlistButton mediaId={movie.id} mediaType={"movie"} />
+            </div>
           </div>
-
           {/* Overview */}
           <p className="text-gray-200 leading-relaxed">{movie.overview}</p>
 
