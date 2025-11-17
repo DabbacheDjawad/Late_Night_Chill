@@ -8,8 +8,8 @@ interface SeasonEpisodesPageProps {
 
 export default async function SeasonEpisodesPage({
   params,
-}: {params : Promise<{id : string , seasonId : string}>}) {
-  const { id, seasonId } = await params;
+}: SeasonEpisodesPageProps) {
+  const { id, seasonId } = params;
   
   const seasonData = await fetchTvSeasonEpisodes(id, seasonId);
 
