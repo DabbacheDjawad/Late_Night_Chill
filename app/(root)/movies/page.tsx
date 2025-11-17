@@ -5,9 +5,8 @@ import ShowsGrid from "@/Components/ShowsGrid";
 import ShowsSearchForm from "@/Components/ShowsSearchForm";
 import { Button } from "@/Components/ui/button";
 import { Suspense } from "react";
-import ShowsPageProps from "@/types/ShowsPageProps";
 import ShowsHero from "@/Components/ShowsHero";
-const page = async ({ searchParams }: ShowsPageProps) => {
+const page = async ({ searchParams }: {searchParams : Promise<{name : string}>}) => {
   const query = (await searchParams).name; 
 
   return (

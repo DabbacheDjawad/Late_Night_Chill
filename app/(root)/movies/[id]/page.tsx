@@ -8,7 +8,7 @@ interface MoviePageProps {
   params: { id: string };
 }
 
-export default async function MovieDetailsPage({ params }: MoviePageProps) {
+export default async function MovieDetailsPage({ params }: {params : Promise<{id : string}>}) {
 
     const {id} = (await params)
 
