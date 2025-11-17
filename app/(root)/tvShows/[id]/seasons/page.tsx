@@ -6,7 +6,7 @@ interface SeasonPageProps {
   params: { id: string };
 }
 
-export default async function TVSeasonsPage({ params }: SeasonPageProps) {
+export default async function TVSeasonsPage({ params }: {params : Promise<{id : string}>}) {
   const { id } = await params;
   const seasons = await fetchTvShowSeasons(id);
 
