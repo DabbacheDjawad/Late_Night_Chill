@@ -5,12 +5,9 @@ import { Button } from "@/Components/ui/button";
 import { Suspense } from "react";
 import { fetchInitialAnimes } from "@/lib/AnimeApi";
 
-interface AnimePageProps {
-  searchParams: { name?: string };
-}
 
-const Page = async ({ searchParams }: AnimePageProps) => {
-  const query =searchParams?.name || "";
+const Page = async ({ searchParams }: {searchParams : Promise<{name : string}>}) => {
+  const query =( await searchParams)?.name || "";
 
   const initialData = await fetchInitialAnimes(query);
 
