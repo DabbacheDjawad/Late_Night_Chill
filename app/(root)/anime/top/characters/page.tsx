@@ -1,4 +1,6 @@
 // app/(root)/characters/top/page.tsx
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import { fetchTopCharacters } from "@/lib/AnimeApi";
 import TopCharactersClient from "@/Components/topCharacterClient";
 

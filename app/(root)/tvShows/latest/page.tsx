@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import { fetchLatestTv } from "@/lib/ShowApi";
 import ShowsGrid from "@/Components/ShowsGrid";
 import ShowsHero from "@/Components/ShowsHero";

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import { Button } from "@/Components/ui/button";
 import { Suspense } from "react";
 import { fetchInitialAnimes } from "@/lib/AnimeApi";

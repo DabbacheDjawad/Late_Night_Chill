@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import { fetchPopularTv } from "@/lib/ShowApi";
 import ShowsGrid from "@/Components/ShowsGrid";
 import ShowsHero from "@/Components/ShowsHero";

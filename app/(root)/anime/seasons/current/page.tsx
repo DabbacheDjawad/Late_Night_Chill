@@ -1,4 +1,6 @@
 // app/(root)/anime/season-now/page.tsx
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import { fetchCurrentSeason } from "@/lib/AnimeApi";
 import SeasonNowClient from "@/Components/seasonsNowClient";
 

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import AnimeGridSkeleton from "@/Components/AnimeGridSkeleton";
 import SearchForm from "@/Components/SearchForm";
 import ShowsGrid from "@/Components/ShowsGrid";

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import AddToFavouritesButton from "@/Components/AddToFavouritesButton";
 import { fetchTvSeasonEpisodes } from "@/lib/ShowApi";
 import Image from "next/image";
