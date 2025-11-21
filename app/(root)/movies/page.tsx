@@ -1,4 +1,4 @@
-"use client";
+
 import AnimeGridSkeleton from "@/Components/AnimeGridSkeleton";
 import SearchForm from "@/Components/SearchForm";
 import ShowsGrid from "@/Components/ShowsGrid";
