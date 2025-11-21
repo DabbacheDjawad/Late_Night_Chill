@@ -202,7 +202,7 @@ export async function fetchTvSeasonEpisodes(tvId: string, seasonNumber: string) 
 export async function fetchTopRatedTv(page: number = 1): Promise<{ shows: TvShow[], hasMore: boolean }> {
   const res = await fetch(
     `https://api.themoviedb.org/3/tv/top_rated?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=${page}`,
-    { next: { revalidate: 60 * 60 } } // cache 1 hour
+    {cache : "no-store" }
   );
 
   if (!res.ok) {
